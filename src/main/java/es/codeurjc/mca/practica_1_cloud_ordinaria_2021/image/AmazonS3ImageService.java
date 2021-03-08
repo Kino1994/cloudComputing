@@ -53,7 +53,10 @@ public class AmazonS3ImageService implements ImageService {
 
 	@Override
 	public void deleteImage(String image) {
-		s3.deleteObject(bucketName, image);
+		if (s3.doesObjectExist(image, image)) {
+			s3.deleteObject(bucketName, image);
+		}
+		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found on Amazon S3");
 	}
 
 }
