@@ -33,6 +33,10 @@ public class AmazonS3ImageService implements ImageService {
 
 	public AmazonS3ImageService() {
 		s3 = AmazonS3ClientBuilder.standard().withRegion(region).build();
+		
+		if(!s3.doesBucketExistV2(this.bucketName)) {
+            s3.createBucket(this.bucketName);
+        }		
 	}
 
 	@Override
