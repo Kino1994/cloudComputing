@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -31,8 +33,9 @@ public class AmazonS3ImageService implements ImageService {
 
 	public static AmazonS3 s3;
 
-	public AmazonS3ImageService() {
-		s3 = AmazonS3ClientBuilder.standard().withRegion(region).build();
+	@PostConstruct
+	public void initialize() {
+		s3 = AmazonS3ClientBuilder.standard().withRegion(this.region).build();
 		
 		if(!s3.doesBucketExistV2(this.bucketName)) {
             s3.createBucket(this.bucketName);
