@@ -18,7 +18,7 @@ PID_PATH_NAME=/tmp/events-pid
 case $1 in start)
        echo "Starting $SERVICE_NAME ..."
   if [ ! -f $PID_PATH_NAME ]; then 
-       nohup java -jar $PATH_TO_JAR --spring.profiles.active=production --amazon.s3.region=eu-west-3 --amazon.s3.bucket-name=joaquin-antonio --spring.datasource.url=jdbc:mysql://events.cgphefsn4gpu.eu-west-3.rds.amazonaws.com/events --spring.datasource.username=joaquin --spring.datasource.password=joaquin1 2>> /dev/null >> /dev/null &      
+       java -jar $PATH_TO_JAR --spring.profiles.active=production --amazon.s3.region=eu-west-3 --amazon.s3.bucket-name=joaquin-antonio --spring.datasource.url=jdbc:mysql://events.cgphefsn4gpu.eu-west-3.rds.amazonaws.com/events --spring.datasource.username=joaquin --spring.datasource.password=joaquin1 2>> /dev/null >> /dev/null &      
        echo $! > $PID_PATH_NAME  
        echo "$SERVICE_NAME started ..."         
   else 
@@ -44,7 +44,7 @@ restart)
       echo "$SERVICE_NAME stopped ...";  
       rm $PID_PATH_NAME     
       echo "$SERVICE_NAME starting ..."  
-       nohup java -jar $PATH_TO_JAR --spring.profiles.active=production --amazon.s3.region=eu-west-3 --amazon.s3.bucket-name=joaquin-antonio --spring.datasource.url=jdbc:mysql://events.cgphefsn4gpu.eu-west-3.rds.amazonaws.com/events --spring.datasource.username=joaquin --spring.datasource.password=joaquin1 2>> /dev/null >> /dev/null &                     
+      java -jar $PATH_TO_JAR --spring.profiles.active=production --amazon.s3.region=eu-west-3 --amazon.s3.bucket-name=joaquin-antonio --spring.datasource.url=jdbc:mysql://events.cgphefsn4gpu.eu-west-3.rds.amazonaws.com/events --spring.datasource.username=joaquin --spring.datasource.password=joaquin1 2>> /dev/null >> /dev/null &                     
       echo $! > $PID_PATH_NAME  
       echo "$SERVICE_NAME started ..."    
   else           
@@ -53,6 +53,11 @@ restart)
  esac
 ```
 
+Le damos permisos al fichero
+
+```
+sudo chmod 700 /usr/local/bin/events.sh 
+```
 
 Para establecer la aplicacion como servicio añadimos el siguiente contenido al fichero.
 
@@ -70,9 +75,9 @@ sudo nano /etc/systemd/system/events.service
  Restart=always
  RestartSec=1
  SuccessExitStatus=143 
- ExecStart = /usr/local/bin/events.sh start
- ExecStop = /usr/local/bin/events.sh stop
- ExecReload = /usr/local/bin/events.sh reload
+ ExecStart = sh /usr/local/bin/./events.sh start
+ ExecStop = sh /usr/local/bin/./events.sh stop
+ ExecReload = sh /usr/local/bin/./events.sh restart
 [Install]
  WantedBy=multi-user.target
 ```
@@ -83,5 +88,4 @@ Finalmente recargamos el systemctl
 sudo systemctl daemon-reload
 sudo systemctl enable events
 sudo systemctl start  events
-sudo systemctl stop events
 ```
