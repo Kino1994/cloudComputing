@@ -52,3 +52,36 @@ restart)
      fi     ;;
  esac
 ```
+
+
+Para establecer la aplicacion como servicio añadimos el siguiente contenido al fichero.
+
+
+```
+sudo nano /etc/systemd/system/events.service
+```
+
+```
+[Unit]
+ Description = Java Service
+ After network.target = events.service
+[Service]
+ Type = forking
+ Restart=always
+ RestartSec=1
+ SuccessExitStatus=143 
+ ExecStart = /usr/local/bin/events.sh start
+ ExecStop = /usr/local/bin/events.sh stop
+ ExecReload = /usr/local/bin/events.sh reload
+[Install]
+ WantedBy=multi-user.target
+```
+
+Finalmente recargamos el systemctl
+
+```
+sudo systemctl daemon-reload
+sudo systemctl enable events
+sudo systemctl start  events
+sudo systemctl stop events
+```
