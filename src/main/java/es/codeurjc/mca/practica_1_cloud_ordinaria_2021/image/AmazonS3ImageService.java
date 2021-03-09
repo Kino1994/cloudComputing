@@ -45,7 +45,7 @@ public class AmazonS3ImageService implements ImageService {
 	@Override
 	public String createImage(MultipartFile multiPartFile) {
 
-		String fileName = multiPartFile.getOriginalFilename() + UUID.randomUUID().toString();
+		String fileName =  UUID.randomUUID().toString() + multiPartFile.getOriginalFilename(); // to allow multiple uploads of the same name file
 		File file = new File(System.getProperty("java.io.tmpdir") + "/" + fileName);
 		try {
 			multiPartFile.transferTo(file);
@@ -60,10 +60,10 @@ public class AmazonS3ImageService implements ImageService {
 
 	@Override
 	public void deleteImage(String image) {
-		if (s3.doesObjectExist(image, image)) {
-			s3.deleteObject(bucketName, image);
+		if (s3.doesObjectExist(bucketName, image.replace(endpoint, ""))) {
+			s3.deleteObject(bucketName, image.replace(endpoint, ""));
 		}
-		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found on Amazon S3");
+		else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found on Amazon S3");
 	}
 
 }
