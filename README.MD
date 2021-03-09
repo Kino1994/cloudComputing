@@ -75,9 +75,9 @@ sudo nano /etc/systemd/system/events.service
  Restart=always
  RestartSec=1
  SuccessExitStatus=143 
- ExecStart = sh /usr/local/bin/./events.sh start
- ExecStop = sh /usr/local/bin/./events.sh stop
- ExecReload = sh /usr/local/bin/./events.sh restart
+ ExecStart = /usr/local/bin/./events.sh start
+ ExecStop = /usr/local/bin/./events.sh stop
+ ExecReload = /usr/local/bin/./events.sh restart
 [Install]
  WantedBy=multi-user.target
 ```
